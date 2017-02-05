@@ -18,7 +18,7 @@ type wsData struct {
 		X            float64 `json:"x"`
 		Y            float64 `json:"y"`
 		Z            float64 `json:"z"`
-		Vibe         bool    `json:"vibe"`
+		Vibe         uint8   `json:"vibe"`
 		Time         uint64  `json:"time"`
 	}                    `json:"data"`
 	Tapped       bool    `json:"tapped"`
