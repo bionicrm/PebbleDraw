@@ -28,7 +28,6 @@ type wsData struct {
 
 func main() {
 	http.HandleFunc("/", rootHandler)
-	http.HandleFunc("/script.js", jsHandler)
 	http.HandleFunc("/ws/pebble", pebbleHandler)
 	http.HandleFunc("/ws/web", webHandler)
 	if err := http.ListenAndServe("0.0.0.0:8080", nil); err != nil {
@@ -37,17 +36,7 @@ func main() {
 }
 
 func rootHandler(w http.ResponseWriter, r *http.Request) {
-	serveFile(w, "web/index.html")
-}
-
-func jsHandler(w http.ResponseWriter, r *http.Request) {
-	serveFile(w, "web/script.js")
-}
-
-var upgrader = websocket.Upgrader{}
-
-func serveFile(w http.ResponseWriter, filename string) {
-	b, err := ioutil.ReadFile(filename)
+	b, err := ioutil.ReadFile("index.html")
 	if err != nil {
 		log.Println(err)
 		return
@@ -56,6 +45,8 @@ func serveFile(w http.ResponseWriter, filename string) {
 		log.Println(err)
 	}
 }
+
+var upgrader = websocket.Upgrader{}
 
 func pebbleHandler(w http.ResponseWriter, r *http.Request) {
 	if err := r.ParseForm(); err != nil {

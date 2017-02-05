@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+
+    <style>
+        body {
+            margin: 0;
+        }
+
+        canvas {
+        }
+    </style>
+
+    <title>Team WTHS</title>
+</head>
+<body>
+    <canvas id="canvas"></canvas>
+
+    <script>
+        var canvas = document.querySelector('#canvas');
+
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        var originX = canvas.width / 2;
+        var originY = canvas.height / 2;
+        var ctx = canvas.getContext('2d');
+        var socket = new WebSocket('ws://' + location.hostname + (location.port ? ':' + location.port : '') + '/ws/web');
+
+        socket.onopen = function() {
+            socket.onmessage = function(data) {
+                console.log(data);
+                ctx.moveTo(originX, originY);
+                ctx.lineTo(Math.random() * 600 - 300 + originX, Math.random() * 600 - 300 + originY);
+                ctx.stroke();
+            };
+        };
+    </script>
+</body>
+</html>
