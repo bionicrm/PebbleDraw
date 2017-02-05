@@ -62,7 +62,7 @@
 
                     var data = JSON.parse(e.data);
                     var xRaw = Math.floor(data.device_i.x / 3);
-                    var yRaw = Math.floor(-data.device_i.y / 3);
+                    var yRaw = Math.floor(data.device_i.y / 3);
                     var x = xRaw + originX;
                     var y = yRaw + originY;
 
