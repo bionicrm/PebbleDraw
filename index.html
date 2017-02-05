@@ -8,22 +8,39 @@
         body {
             margin: 0;
         }
+
+        canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+
+        #canvas {
+            z-index: 0;
+        }
+
+        #ghost-canvas {
+            z-index: 1;
+        }
     </style>
 
     <title>Team WTHS</title>
 </head>
 <body>
     <canvas id="canvas"></canvas>
+    <canvas id="ghost-canvas"></canvas>
 
     <script>
         var canvas = document.querySelector('#canvas');
+        var ghostCanvas = document.querySelector('#ghost-canvas');
 
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
+        canvas.width = ghostCanvas.width = window.innerWidth;
+        canvas.height = ghostCanvas.height = window.innerHeight;
 
         var originX = canvas.width / 2;
         var originY = canvas.height / 2;
         var ctx = canvas.getContext('2d');
+        var ghostCtx = ghostCanvas.getContext('2d');
         var socket = new WebSocket('ws://' + location.hostname + (location.port ? ':' + location.port : '') + '/ws/web?token=wths');
 
         socket.onopen = function() {
@@ -53,9 +70,16 @@
                     y -= offsetY;
                 }
 
-                if (data.drawing_i.drawing) {
-                    var style = 'hsl(' + data.drawing_i.hue + ', 100%, 50%)';
+                var style = 'hsl(' + data.drawing_i.hue + ', 100%, 50%)';
+                var drawDot = function(ctx) {
+                    ctx.beginPath();
+                    ctx.fillStyle = style;
+                    ctx.fillRect(x - 1, y - 1, 3, 3);
+                };
 
+                ghostCtx.clearRect(0, 0, ghostCtx.width, ghostCtx.height);
+
+                if (data.drawing_i.drawing) {
                     if (lastX !== undefined && lastY !== undefined) {
                         ctx.beginPath();
                         ctx.strokeStyle = style;
@@ -64,9 +88,9 @@
                         ctx.stroke();
                     }
 
-                    ctx.beginPath();
-                    ctx.fillColor = style;
-                    ctx.fillRect(x - 1, y - 1, 3, 3);
+                    drawDot(ctx);
+                } else {
+                    drawDot(ghostCtx);
                 }
 
                 lastX = x;
