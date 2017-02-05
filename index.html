@@ -31,22 +31,29 @@
 
         socket.onopen = function() {
             var first = true;
+            var offsetX = 0;
+            var offsetY = 0;
             var lastX, lastY;
 
             socket.onmessage = function(e) {
                 console.log(e);
 
                 var data = JSON.parse(e.data);
-                var x = Math.floor(data.x / 3) + originX;
-                var y = Math.floor(-data.y / 3) + originY;
+                var xRaw = Math.floor(data.x / 3);
+                var yRaw = Math.floor(data.y / 3);
+                var x = xRaw + originX;
+                var y = yRaw + originY;
 
                 if (first) {
-                    first = true;
+                    first = false;
                     x = originX;
                     y = originY;
-                    originX -= x;
-                    originY -= y;
+                    offsetX = xRaw;
+                    offsetY = yRaw;
                 }
+
+                x -= offsetX;
+                y -= offsetY;
 
                 if (lastX !== undefined && lastY !== undefined) {
                     ctx.moveTo(lastX, lastY);
