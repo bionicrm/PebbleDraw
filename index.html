@@ -54,7 +54,7 @@
                 }
 
                 if (data.drawing_i.drawing) {
-                    ctx.fillStyle = 'hsl(' + data.drawing_i.hue + ', 100%, 50%)';
+                    ctx.fillStyle = ctx.strokeColor = 'hsl(' + data.drawing_i.hue + ', 100%, 50%)';
 
                     if (lastX !== undefined && lastY !== undefined) {
                         ctx.moveTo(lastX, lastY);
