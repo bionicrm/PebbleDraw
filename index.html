@@ -31,6 +31,7 @@
 
         socket.onopen = function() {
             socket.onmessage = function(e) {
+                console.log(e);
                 ctx.fillRect(e.data.x - 1 + originX, e.data.y - 1 + originY, 3, 3);
             };
         };
