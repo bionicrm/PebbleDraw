@@ -97,7 +97,7 @@
                         if (lastX !== undefined && lastY !== undefined) {
                             ctx.beginPath();
                             ctx.strokeStyle = style;
-                            ctx.shadowBlur = 10;
+                            ctx.shadowBlur = 20;
                             ctx.shadowColor = style;
                             ctx.moveTo(last2X, last2Y);
                             ctx.bezierCurveTo(lastX, lastY, (lastX + x)/2, (lastY + y)/2, x, y);
