@@ -39,8 +39,8 @@
                 console.log(e);
 
                 var data = JSON.parse(e.data);
-                var x = Math.floor(data.x / 10.);
-                var y = Math.floor(data.y / 10.);
+                var x = Math.floor(data.x / 100.);
+                var y = Math.floor(data.y / 100.);
 
                 if (first) {
                     first = false;
@@ -51,7 +51,7 @@
                 cursorX += x - lastX;
                 cursorY += y - lastY;
                 ctx.moveTo(lastX, lastY);
-                ctx.lineTo(x, y);
+                ctx.lineTo(cursorX, cursorY);
                 ctx.stroke();
                 ctx.fillRect(cursorX - 1, cursorY - 1, 3, 3);
 
