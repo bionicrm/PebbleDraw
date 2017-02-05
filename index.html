@@ -55,7 +55,7 @@
                 var first = true;
                 var offsetX = 0;
                 var offsetY = 0;
-                var lastX, lastY;
+                var lastX, lastY, last2X, last2Y;
 
                 sock.onmessage = function(e) {
                     console.log(e);
@@ -95,9 +95,11 @@
                         if (lastX !== undefined && lastY !== undefined) {
                             ctx.beginPath();
                             ctx.strokeStyle = style;
-                            ctx.moveTo(lastX, lastY);
+                            /*ctx.moveTo(lastX, lastY);
                             ctx.lineTo(x, y);
-                            ctx.stroke();
+                            ctx.stroke();*/
+                            ctx.moveTo(last2X, last2Y);
+                            ctx.bezierCurveTo(lastX, lastY, (lastX + x)/2, (lastY + y)/2, x, y);
                         }
 
                         drawDot(ctx);
@@ -105,6 +107,8 @@
                         drawDot(ghostCtx);
                     }
 
+                    last2X = lastX;
+                    last2Y = lastY;
                     lastX = x;
                     lastY = y;
                 };
