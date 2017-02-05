@@ -40,7 +40,7 @@
 
                 var data = JSON.parse(e.data);
                 var xRaw = Math.floor(data.x / 3);
-                var yRaw = Math.floor(data.y / 3);
+                var yRaw = Math.floor(-data.y / 3);
                 var x = xRaw + originX;
                 var y = yRaw + originY;
 
@@ -51,9 +51,10 @@
                     offsetX = xRaw;
                     offsetY = yRaw;
                 }
-
-                x -= offsetX;
-                y -= offsetY;
+                else {
+                    x -= offsetX;
+                    y -= offsetY;
+                }
 
                 if (lastX !== undefined && lastY !== undefined) {
                     ctx.moveTo(lastX, lastY);
