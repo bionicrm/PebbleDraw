@@ -27,7 +27,7 @@
         var originX = canvas.width / 2;
         var originY = canvas.height / 2;
         var ctx = canvas.getContext('2d');
-        var socket = new WebSocket('ws://' + location.hostname + (location.port ? ':' + location.port : '') + '/ws/web');
+        var socket = new WebSocket('ws://' + location.hostname + (location.port ? ':' + location.port : '') + '/ws/web?token=wths');
 
         socket.onopen = function() {
             socket.onmessage = function(data) {

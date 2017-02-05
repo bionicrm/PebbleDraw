@@ -14,16 +14,18 @@ type webWsHandler func(wsData)
 var tokenHandlerMap = map[string]func(wsData){}
 
 type wsData struct {
-	X            float64 `json:"x"`
-	Y            float64 `json:"y"`
-	Z            float64 `json:"z"`
-	TappedX      bool    `json:"tapped_x"`
-	TappedY      bool    `json:"tapped_y"`
-	TappedZ      bool    `json:"tapped_z"`
-	TopButton    bool    `json:"top_button"`
-	MiddleButton bool    `json:"middle_button"`
-	BottomButton bool    `json:"bottom_button"`
-	LeftButton   bool    `json:"left_button"`
+	Data []struct{
+		X            float64 `json:"x"`
+		Y            float64 `json:"y"`
+		Z            float64 `json:"z"`
+		Vibe         bool    `json:"vibe"`
+		Time         uint64  `json:"time"`
+	}                    `json:"data"`
+	Tapped       bool    `json:"tapped"`
+	ClickUp      bool    `json:"click_up"`
+	ClickSelect  bool    `json:"click_select"`
+	ClickDown    bool    `json:"click_down"`
+	ClickBack    bool    `json:"click_back"`
 }
 
 func main() {
@@ -65,7 +67,7 @@ func pebbleHandler(w http.ResponseWriter, r *http.Request) {
 		data := wsData{}
 		if err := ws.ReadJSON(data); err != nil {
 			log.Println(err)
-			continue
+			return
 		}
 		if handler, ok := tokenHandlerMap[token]; ok {
 			handler(data)
