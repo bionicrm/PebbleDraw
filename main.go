@@ -95,6 +95,9 @@ func pebbleHandler(w http.ResponseWriter, r *http.Request) {
 			Drawing: drawing,
 			Hue:     hue,
 		}
+		if deviceI.ClickBack {
+			drawingI.Drawing = false
+		}
 		if err := ws.WriteJSON(drawingI); err != nil {
 			log.Println(err)
 			return
