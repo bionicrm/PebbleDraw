@@ -57,14 +57,14 @@
                 var first = true;
                 var offsetX = 0;
                 var offsetY = 0;
-                var lastX, lastY;
+                var lastX, lastY, last2X, last2Y;
 
                 sock.onmessage = function(e) {
                     console.log(e);
 
                     var data = JSON.parse(e.data);
                     var xRaw = Math.floor(data.device_i.x / 3);
-                    var yRaw = Math.floor(-data.device_i.y / 3);
+                    var yRaw = Math.floor(data.device_i.y / 3);
                     var x = xRaw + originX;
                     var y = yRaw + originY;
 
@@ -97,16 +97,21 @@
                         if (lastX !== undefined && lastY !== undefined) {
                             ctx.beginPath();
                             ctx.strokeStyle = style;
-                            ctx.moveTo(lastX, lastY);
+                            /*ctx.moveTo(lastX, lastY);
                             ctx.lineTo(x, y);
+                            ctx.stroke();*/
+                            ctx.moveTo(last2X, last2Y);
+                            ctx.bezierCurveTo(lastX, lastY, (lastX + x)/2, (lastY + y)/2, x, y);
                             ctx.stroke();
                         }
 
-                        drawDot(ctx);
+                        //drawDot(ctx);
                     } else {
                         drawDot(ghostCtx);
                     }
 
+                    last2X = lastX;
+                    last2Y = lastY;
                     lastX = x;
                     lastY = y;
                 };
