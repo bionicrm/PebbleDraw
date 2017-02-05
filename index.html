@@ -30,25 +30,45 @@
         var socket = new WebSocket('ws://' + location.hostname + (location.port ? ':' + location.port : '') + '/ws/web?token=wths');
 
         socket.onopen = function() {
+            var cursorX, cursorY;
             var lastX, lastY;
 
             socket.onmessage = function(e) {
                 console.log(e);
 
                 var data = JSON.parse(e.data);
+                var x = Math.floor(data.x / 3.);
+                var y = Math.floor(data.y / 3.);
 
-                var x = Math.floor(data.x / 3) + originX;
-                var y = Math.floor(data.y / 3) + originY;
-
-                if (lastX !== undefined && lastY !== undefined) {
+                if (cursorX === undefined || cursorY === undefined) {
+                    cursorX = originX + x;
+                    cursorY = originY + y;
+                    lastX = x;
+                    lastY = y;
+                }
+                else {
                     ctx.moveTo(lastX, lastY);
                     ctx.lineTo(x, y);
                     ctx.stroke();
                 }
 
-                ctx.fillRect(x - 1, y - 1, 3, 3);
-                lastX = x;
-                lastY = y;
+                cursorX += x - lastX;
+                cursorY += y - lastY;
+
+                ctx.fillRect(cursorX - 1, cursorY - 1, 3, 3);
+
+//                var x = Math.floor(data.x / 3) + originX;
+//                var y = Math.floor(data.y / 3) + originY;
+//
+//                if (lastX !== undefined && lastY !== undefined) {
+//                    ctx.moveTo(lastX, lastY);
+//                    ctx.lineTo(x, y);
+//                    ctx.stroke();
+//                }
+//
+//                ctx.fillRect(x - 1, y - 1, 3, 3);
+//                lastX = x;
+//                lastY = y;
             };
         };
     </script>
