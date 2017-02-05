@@ -91,7 +91,7 @@ func pebbleHandler(w http.ResponseWriter, r *http.Request) {
 		if deviceI.ClickDown {
 			incrementHue(-360 / 10)
 		}
-		if deviceI.ClickBack {
+		if deviceI.ClickBack || deviceI.Tapped {
 			drawing = false
 		}
 		drawingI := drawingInfo{
