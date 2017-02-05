@@ -14,13 +14,9 @@ type webWsHandler func(wsData)
 var tokenHandlerMap = map[string]func(wsData){}
 
 type wsData struct {
-	Data []struct{
-		X            float64 `json:"x"`
-		Y            float64 `json:"y"`
-		Z            float64 `json:"z"`
-		Vibe         uint8   `json:"vibe"`
-		Time         uint64  `json:"time"`
-	}                    `json:"data"`
+	X            float64 `json:"x"`
+	Y            float64 `json:"y"`
+	Z            float64 `json:"z"`
 	Tapped       bool    `json:"tapped"`
 	ClickUp      bool    `json:"click_up"`
 	ClickSelect  bool    `json:"click_select"`
