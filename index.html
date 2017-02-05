@@ -87,14 +87,14 @@
                         ctx.fillRect(x - 1, y - 1, 3, 3);
                     };
 
-                    if (data.device_i.click_back) {
+                    if (data.device_i.tapped) {
                         ctx.clearRect(0, 0, canvas.width, canvas.height);
                     }
 
                     ghostCtx.clearRect(0, 0, ghostCanvas.width, ghostCanvas.height);
 
 
-                    if (data.device_i.tapped) {
+                    if (data.device_i.click_back) {
                         first = true;
                         lastX = lastY = undefined;
                         return;
