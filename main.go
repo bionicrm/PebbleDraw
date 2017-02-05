@@ -91,12 +91,12 @@ func pebbleHandler(w http.ResponseWriter, r *http.Request) {
 		if deviceI.ClickDown {
 			incrementHue(-360 / 6)
 		}
+		if deviceI.ClickBack {
+			drawing = false
+		}
 		drawingI := drawingInfo{
 			Drawing: drawing,
 			Hue:     hue,
-		}
-		if deviceI.ClickBack {
-			drawingI.Drawing = false
 		}
 		if err := ws.WriteJSON(drawingI); err != nil {
 			log.Println(err)
