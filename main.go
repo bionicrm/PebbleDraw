@@ -4,7 +4,10 @@ import (
 	"net/http"
 	"log"
 	"github.com/gorilla/websocket"
+	"io/ioutil"
 )
+
+const TokenKey = "token"
 
 type webWsHandler func(wsData)
 
@@ -24,10 +27,33 @@ type wsData struct {
 }
 
 func main() {
+	http.HandleFunc("/", rootHandler)
+	http.HandleFunc("/script.js", jsHandler)
 	http.HandleFunc("/ws/pebble", pebbleHandler)
 	http.HandleFunc("/ws/web", webHandler)
 	if err := http.ListenAndServe("0.0.0.0:8080", nil); err != nil {
 		log.Fatalln(err)
+	}
+}
+
+func rootHandler(w http.ResponseWriter, r *http.Request) {
+	serveFile(w, "web/index.html")
+}
+
+func jsHandler(w http.ResponseWriter, r *http.Request) {
+	serveFile(w, "web/script.js")
+}
+
+var upgrader = websocket.Upgrader{}
+
+func serveFile(w http.ResponseWriter, filename string) {
+	b, err := ioutil.ReadFile(filename)
+	if err != nil {
+		log.Println(err)
+		return
+	}
+	if _, err := w.Write(b); err != nil {
+		log.Println(err)
 	}
 }
 
@@ -36,8 +62,8 @@ func pebbleHandler(w http.ResponseWriter, r *http.Request) {
 		log.Println(err)
 		return
 	}
-	token := r.Form.Get("token")
-	ws, err := websocket.Upgrader{}.Upgrade(w, r, nil)
+	token := r.Form.Get(TokenKey)
+	ws, err := upgrader.Upgrade(w, r, nil)
 	if err != nil {
 		log.Println(err)
 		return
@@ -61,24 +87,16 @@ func webHandler(w http.ResponseWriter, r *http.Request) {
 		log.Println(err)
 		return
 	}
-	token := r.Form.Get("token")
-	ws, err := websocket.Upgrader{}.Upgrade(w, r, nil)
+	token := r.Form.Get(TokenKey)
+	ws, err := upgrader.Upgrade(w, r, nil)
 	if err != nil {
 		log.Println(err)
 		return
 	}
-	defer ws.Close()
 
-	for {
-		data := wsData{}
-		if err := ws.ReadJSON(data); err != nil {
+	tokenHandlerMap[token] = func(data wsData) {
+		if err := ws.WriteJSON(data); err != nil {
 			log.Println(err)
-			continue
-		}
-		tokenHandlerMap[token] = func(data wsData) {
-			if err := ws.WriteJSON(data); err != nil {
-				log.Println(err)
-			}
 		}
 	}
 }
