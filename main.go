@@ -63,9 +63,7 @@ func pebbleHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	defer ws.Close()
-	defer log.Println("DISCONNECTING PEBBLE")
 
-	log.Println("CONNECTING PEBBLE")
 	drawing := false
 	hue := 0
 
