@@ -93,6 +93,12 @@
 
                     ghostCtx.clearRect(0, 0, ghostCanvas.width, ghostCanvas.height);
 
+
+                    if (data.device_i.tapped) {
+                        first = true;
+                        return;
+                    }
+
                     if (data.drawing_i.drawing) {
                         if (lastX !== undefined && lastY !== undefined) {
                             ctx.beginPath();
@@ -100,13 +106,11 @@
                             ctx.shadowBlur = 5;
                             ctx.shadowColor = style;
                             ctx.moveTo(last2X, last2Y);
-                            ctx.bezierCurveTo(lastX, lastY, (lastX + x)/2, (lastY + y)/2, x, y);
+                            ctx.bezierCurveTo(lastX, lastY, (lastX + x) / 2, (lastY + y) / 2, x, y);
                             ctx.stroke();
                             ctx.shadowBlur = 20;
                             ctx.stroke();
                         }
-
-                        //drawDot(ctx);
                     } else {
                         drawDot(ghostCtx);
                     }
