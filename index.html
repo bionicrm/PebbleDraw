@@ -30,11 +30,8 @@
         var socket = new WebSocket('ws://' + location.hostname + (location.port ? ':' + location.port : '') + '/ws/web?token=wths');
 
         socket.onopen = function() {
-            socket.onmessage = function(data) {
-                console.log(data);
-                ctx.moveTo(originX, originY);
-                ctx.lineTo(Math.random() * 600 - 300 + originX, Math.random() * 600 - 300 + originY);
-                ctx.stroke();
+            socket.onmessage = function(e) {
+                ctx.fillRect(e.data.x - 1 + originX, e.data.y - 1 + originY, 3, 3);
             };
         };
     </script>
