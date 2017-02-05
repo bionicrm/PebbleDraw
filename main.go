@@ -11,7 +11,7 @@ const TokenKey = "token"
 
 type webWsHandler func(wsData)
 
-var tokenHandlerMap = map[string]func(wsData){}
+var tokenHandlerMap = map[string]func(wsData) error{}
 
 type wsData struct {
 	X            float64 `json:"x"`
@@ -66,7 +66,10 @@ func pebbleHandler(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 		if handler, ok := tokenHandlerMap[token]; ok {
-			handler(data)
+			if err := handler(data); err != nil {
+				log.Println(err)
+				return
+			}
 		}
 	}
 }
@@ -83,9 +86,7 @@ func webHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	tokenHandlerMap[token] = func(data wsData) {
-		if err := ws.WriteJSON(data); err != nil {
-			log.Println(err)
-		}
+	tokenHandlerMap[token] = func(data wsData) error {
+		return ws.WriteJSON(data)
 	}
 }
