@@ -65,7 +65,7 @@ func pebbleHandler(w http.ResponseWriter, r *http.Request) {
 
 	for {
 		data := wsData{}
-		if err := ws.ReadJSON(data); err != nil {
+		if err := ws.ReadJSON(&data); err != nil {
 			log.Println(err)
 			return
 		}
