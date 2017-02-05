@@ -63,8 +63,10 @@ func pebbleHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	defer ws.Close()
+	defer log.Println("DISCONNECTING PEBBLE")
 
-	drawing := true
+	log.Println("CONNECTING PEBBLE")
+	drawing := false
 	hue := 0
 
 	var incrementHue = func(amount int) {
@@ -83,13 +85,13 @@ func pebbleHandler(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 		if deviceI.ClickUp {
-			incrementHue(360 / 6)
+			incrementHue(360 / 10)
 		}
 		if deviceI.ClickSelect {
 			drawing = !drawing
 		}
 		if deviceI.ClickDown {
-			incrementHue(-360 / 6)
+			incrementHue(-360 / 10)
 		}
 		if deviceI.ClickBack {
 			drawing = false
