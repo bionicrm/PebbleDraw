@@ -33,7 +33,7 @@
             socket.onmessage = function(e) {
                 console.log(e);
                 var data = JSON.parse(e.data);
-                ctx.fillRect(Math.floor(data.x) - 1 + originX, Math.floor(data.y) - 1 + originY, 3, 3);
+                ctx.fillRect(Math.floor(data.x / 3) - 1 + originX, Math.floor(data.y / 3) - 1 + originY, 3, 3);
             };
         };
     </script>
