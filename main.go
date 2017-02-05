@@ -9,11 +9,11 @@ import (
 
 const TokenKey = "token"
 
-type webWsHandler func(wsData)
+type webWsHandler func(deviceInfo)
 
-var tokenHandlerMap = map[string]func(wsData) error{}
+var tokenHandlerMap = map[string]func(deviceInfo, drawingInfo) error{}
 
-type wsData struct {
+type deviceInfo struct {
 	X            float64 `json:"x"`
 	Y            float64 `json:"y"`
 	Z            float64 `json:"z"`
@@ -22,6 +22,11 @@ type wsData struct {
 	ClickSelect  bool    `json:"click_select"`
 	ClickDown    bool    `json:"click_down"`
 	ClickBack    bool    `json:"click_back"`
+}
+
+type drawingInfo struct {
+	Drawing bool `json:"drawing"`
+	Hue     int  `json:"hue"`
 }
 
 func main() {
@@ -59,14 +64,43 @@ func pebbleHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	defer ws.Close()
 
+	drawing := true
+	hue := 0
+
+	var incrementHue = func(amount int) {
+		hue += amount
+		if hue > 360 {
+			hue -= 360
+		} else if hue < 0 {
+			hue += 360
+		}
+	}
+
 	for {
-		data := wsData{}
-		if err := ws.ReadJSON(&data); err != nil {
+		deviceI := deviceInfo{}
+		if err := ws.ReadJSON(&deviceI); err != nil {
+			log.Println(err)
+			return
+		}
+		if deviceI.ClickUp {
+			incrementHue(360 / 6)
+		}
+		if deviceI.ClickSelect {
+			drawing = !drawing
+		}
+		if deviceI.ClickDown {
+			incrementHue(-360 / 6)
+		}
+		drawingI := drawingInfo{
+			Drawing: drawing,
+			Hue:     hue,
+		}
+		if err := ws.WriteJSON(drawingI); err != nil {
 			log.Println(err)
 			return
 		}
 		if handler, ok := tokenHandlerMap[token]; ok {
-			if err := handler(data); err != nil {
+			if err := handler(deviceI, drawingI); err != nil {
 				log.Println(err)
 				return
 			}
@@ -86,7 +120,13 @@ func webHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	tokenHandlerMap[token] = func(data wsData) error {
-		return ws.WriteJSON(data)
+	tokenHandlerMap[token] = func(deviceI deviceInfo, drawingI drawingInfo) error {
+		return ws.WriteJSON(struct{
+			DeviceI  deviceInfo  `json:"device_i"`
+			DrawingI drawingInfo `json:"drawing_i"`
+		}{
+			DeviceI:  deviceI,
+			DrawingI: drawingI,
+		})
 	}
 }
